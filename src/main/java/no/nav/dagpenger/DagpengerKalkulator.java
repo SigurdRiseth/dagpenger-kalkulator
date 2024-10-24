@@ -1,9 +1,8 @@
 package no.nav.dagpenger;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import no.nav.grunnbeløp.Beregningsmetode;
 import no.nav.grunnbeløp.GrunnbeløpVerktøy;
 import no.nav.årslønn.Årslønn;
@@ -27,19 +26,22 @@ import no.nav.årslønn.Årslønn;
  * </p>
  *
  * @author Emil Elton Nilsen, Sigurd Riseth
- * @version 1.0
+ * @version 1.1
+ * @see Beregningsmetode
+ * @see GrunnbeløpVerktøy
+ * @see Årslønn
  */
 
 public class DagpengerKalkulator {
 
   private static final int ARBEIDSDAGER_I_ÅRET = 260;
 
-  public final GrunnbeløpVerktøy grunnbeløpVerktøy;
-  public final List<Årslønn> årslønner;
+  private final GrunnbeløpVerktøy grunnbeløpVerktøy;
+  private final Map<Integer, Årslønn> årslønner;
 
   public DagpengerKalkulator() {
     this.grunnbeløpVerktøy = new GrunnbeløpVerktøy();
-    this.årslønner = new ArrayList<>();
+    this.årslønner = new HashMap<>();
   }
 
   /**
@@ -64,23 +66,31 @@ public class DagpengerKalkulator {
    * dagpenger, returneres 0 kr.
    * @throws IllegalArgumentException hvis beregningsmetoden er ugyldig eller uventet.
    */
-
   public double kalkulerDagsats() throws IllegalArgumentException {
     double dagsats = 0;
 
     if (harRettigheterTilDagpenger()) {
-
       dagsats = switch (velgBeregningsMetode()) {
-        case SISTE_ÅRSLØNN ->
-            Math.ceil(hentÅrslønnVedIndeks(0).hentÅrslønn() / ARBEIDSDAGER_I_ÅRET);
-        case GJENNOMSNITTET_AV_TRE_ÅR ->
-            Math.ceil((summerNyligeÅrslønner(3) / 3) / ARBEIDSDAGER_I_ÅRET);
-        case MAKS_ÅRLIG_DAGPENGERGRUNNLAG -> Math.ceil(
-            grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag() / ARBEIDSDAGER_I_ÅRET);
+        case SISTE_ÅRSLØNN -> beregnDagsats(
+            summerNyligeÅrslønner(1));
+        case GJENNOMSNITTET_AV_TRE_ÅR -> beregnDagsats(
+            summerNyligeÅrslønner(3) / 3);
+        case MAKS_ÅRLIG_DAGPENGERGRUNNLAG -> beregnDagsats(
+            grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag());
       };
     }
 
     return dagsats;
+  }
+
+  /**
+   * Beregner dagsatsen basert på en gitt årslønn.
+   *
+   * @param årslønn årslønnen som dagsatsen skal beregnes ut ifra.
+   * @return dagsatsen basert på årslønnen.
+   */
+  private double beregnDagsats(double årslønn) {
+    return Math.ceil(årslønn / ARBEIDSDAGER_I_ÅRET);
   }
 
   /**
@@ -103,7 +113,7 @@ public class DagpengerKalkulator {
     }
 
     // Sjekker om siste årslønn er høyere eller lik 1.5G
-    if (hentÅrslønnVedIndeks(0).hentÅrslønn()
+    if (summerNyligeÅrslønner(1)
         >= grunnbeløpVerktøy.hentMinimumÅrslønnForRettPåDagpenger()) {
       return true;
     }
@@ -113,39 +123,49 @@ public class DagpengerKalkulator {
 
 
   /**
-   * Velger hva som skal være beregnings metode for dagsats ut ifra en person sine årslønner.
+   * Velger hvilken beregningsmetode som skal brukes for å kalkulere dagsats, basert på personens
+   * årslønner.
    *
-   * @return beregnings metode for dagsats.
+   * @return beregningsmetoden som skal brukes for dagsatsberegningen.
+   * @throws IllegalStateException hvis det ikke finnes årslønn tilgjengelig.
    */
-  public Beregningsmetode velgBeregningsMetode() {
-    Beregningsmetode beregningsMetode;
-
-    if (hentÅrslønnVedIndeks(0).hentÅrslønn() > (summerNyligeÅrslønner(3) / 3)) {
-      beregningsMetode = Beregningsmetode.SISTE_ÅRSLØNN;
-      if (hentÅrslønnVedIndeks(0).hentÅrslønn()
-          > grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag()) {
-        beregningsMetode = Beregningsmetode.MAKS_ÅRLIG_DAGPENGERGRUNNLAG;
-      }
-    } else {
-      beregningsMetode = Beregningsmetode.GJENNOMSNITTET_AV_TRE_ÅR;
+  public Beregningsmetode velgBeregningsMetode() throws IllegalStateException {
+    if (årslønner.isEmpty()) {
+      throw new IllegalStateException("Ingen årslønn tilgjengelig for beregning.");
     }
 
-    return beregningsMetode;
-  }
+    double sisteÅrslønn = summerNyligeÅrslønner(1);
+    double gjennomsnittTreÅr = summerNyligeÅrslønner(3) / 3;
+    double maksDagpengegrunnlag = grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag();
 
-  public void leggTilÅrslønn(Årslønn årslønn) {
-    this.årslønner.add(årslønn);
-    this.sorterÅrslønnerBasertPåNyesteÅrslønn();
+    if (sisteÅrslønn > gjennomsnittTreÅr) {
+      // Hvis siste årslønn er større enn gjennomsnittet av de tre siste årene
+      if (sisteÅrslønn > maksDagpengegrunnlag) {
+        return Beregningsmetode.MAKS_ÅRLIG_DAGPENGERGRUNNLAG;
+      }
+      return Beregningsmetode.SISTE_ÅRSLØNN;
+    } else {
+      return Beregningsmetode.GJENNOMSNITTET_AV_TRE_ÅR;
+    }
   }
 
   /**
-   * Henter årslønnen i registeret basert på dens posisjon i registeret ved gitt indeks.
+   * Legger til en ny årslønn i registeret.
    *
-   * @param indeks posisjonen til årslønnen.
-   * @return årslønnen ved gitt indeks.
+   * @param årslønn årslønnen som skal legges til i registeret.
    */
-  public Årslønn hentÅrslønnVedIndeks(int indeks) {
-    return this.årslønner.get(indeks);
+  public void leggTilÅrslønn(Årslønn årslønn) {
+    this.årslønner.put(årslønn.hentÅretForLønn(), årslønn);
+  }
+
+  /**
+   * Henter årslønnen i registeret basert på dens gitt nøkkel (år).
+   *
+   * @param år posisjonen til årslønnen.
+   * @return årslønnen ved gitt år.
+   */
+  public Årslønn hentÅrslønnForÅr(int år) {
+    return this.årslønner.get(år);
   }
 
   /**
@@ -154,29 +174,17 @@ public class DagpengerKalkulator {
    *
    * @param antallÅrÅSummere antall år med årslønner som skal summeres. Må være større enn 0.
    * @return summen av årslønner for de spesifiserte årene.
-   * @throws IllegalArgumentException hvis antallÅrÅSummere er negativt eller <code>null</code>.
+   * @throws IllegalArgumentException hvis antallÅrÅSummere er negativt eller null (0).
    */
   public double summerNyligeÅrslønner(int antallÅrÅSummere) throws IllegalArgumentException {
     if (antallÅrÅSummere <= 0) {
       throw new IllegalArgumentException("Antall år å summere må være større enn 0.");
     }
-
-    int årÅSummere = Math.min(antallÅrÅSummere, this.årslønner.size());
-
-    return this.årslønner.stream()
-        .limit(årÅSummere)
+    return årslønner.values().stream()
+        .sorted(Comparator.comparing(Årslønn::hentÅretForLønn).reversed())
+        .limit(antallÅrÅSummere)
         .mapToDouble(Årslønn::hentÅrslønn)
         .sum();
   }
 
-
-  /**
-   * Sorterer registeret slik at den nyligste årslønnen er det først elementet i registeret. Først
-   * blir årslønnene i registeret sortert ut at den eldstre årslønnen skal først i registeret,
-   * deretter blir registeret reversert.
-   */
-  public void sorterÅrslønnerBasertPåNyesteÅrslønn() {
-    this.årslønner.sort(Comparator.comparingInt(Årslønn::hentÅretForLønn));
-    Collections.reverse(this.årslønner);
-  }
 }

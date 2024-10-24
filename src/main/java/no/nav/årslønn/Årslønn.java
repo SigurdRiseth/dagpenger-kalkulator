@@ -12,8 +12,8 @@ package no.nav.årslønn;
  */
 public class Årslønn {
 
-  private int åretForLønn;
-  private double årslønn;
+  private final int åretForLønn;
+  private final double årslønn;
 
   /**
    * Konstruktør for å initialisere en ny instans av Årslønn med gitt år og lønn.
