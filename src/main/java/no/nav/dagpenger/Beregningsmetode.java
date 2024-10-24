@@ -1,4 +1,4 @@
-package no.nav.grunnbeløp;
+package no.nav.dagpenger;
 
 /**
  * Representerer hvilken metode som skal brukes for å beregne dagpenger.

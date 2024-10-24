@@ -1,7 +1,5 @@
 package no.nav.dagpenger;
 
-import no.nav.dagpenger.DagpengerKalkulator;
-import no.nav.grunnbeløp.Beregningsmetode;
 import no.nav.årslønn.Årslønn;
 import org.junit.jupiter.api.Test;
 

@@ -3,7 +3,6 @@ package no.nav.dagpenger;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import no.nav.grunnbeløp.Beregningsmetode;
 import no.nav.grunnbeløp.GrunnbeløpVerktøy;
 import no.nav.årslønn.Årslønn;
 
