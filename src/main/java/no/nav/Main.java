@@ -21,8 +21,11 @@ public class Main {
 
       saksbehandler.behandleResultat(resultat);
 
+      System.out.println("====================================");
+      System.out.println("NAV Dagpengerkalkulator");
       System.out.println("Saksbehandler: " + saksbehandler.hentNavn());
-      System.out.println("Resultat av dagpengeforespørsel: " + resultat.hentSpesialisering() + " - " + resultat.hentDagsats() + " kr.");
+      System.out.println("Resultat av dagpengeforespørsel: " + resultat.hentSpesialisering() + " - " + resultat.hentDagsats() + " kr per dag.");
+      System.out.println("====================================");
     }
     catch (Exception e) {
       System.out.println("Kunne ikke kalkulere dagsats: " + e.getMessage());

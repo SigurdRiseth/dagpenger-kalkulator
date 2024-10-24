@@ -85,7 +85,7 @@ public class DagpengerKalkulator {
           dagsats = beregnDagsats(grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag());
           spesialisering = SaksbehandlerSpesialisering.INNVILGET_MED_MAKSSATS;
           break;
-      };
+      }
     }
 
     return new Resultat(dagsats, spesialisering);
@@ -163,16 +163,6 @@ public class DagpengerKalkulator {
    */
   public void leggTilÅrslønn(Årslønn årslønn) {
     this.årslønner.put(årslønn.hentÅretForLønn(), årslønn);
-  }
-
-  /**
-   * Henter årslønnen i registeret basert på dens gitt nøkkel (år).
-   *
-   * @param år posisjonen til årslønnen.
-   * @return årslønnen ved gitt år.
-   */
-  public Årslønn hentÅrslønnForÅr(int år) {
-    return this.årslønner.get(år);
   }
 
   /**

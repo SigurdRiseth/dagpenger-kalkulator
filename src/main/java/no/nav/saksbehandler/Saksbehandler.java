@@ -21,13 +21,13 @@ public class Saksbehandler {
   }
 
   /**
-   * Godkjenner eller avslår et resultat.
+   * Godkjenner eller avslï¿½r et resultat.
    *
    * @param resultat resultatet som skal behandles.
    */
   public void behandleResultat(Resultat resultat) {
     if (resultat.hentSpesialisering() == SaksbehandlerSpesialisering.AVSLAG_FOR_LAV_INNTEKT) {
-      resultat.setStatus(ResultatStatus.AVSLÅTT);
+      resultat.setStatus(ResultatStatus.AVSLÃ…TT);
     } else {
       resultat.setStatus(ResultatStatus.INNVILGET);
     }
