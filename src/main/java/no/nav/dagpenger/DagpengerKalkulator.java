@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import no.nav.grunnbeløp.GrunnbeløpVerktøy;
+import no.nav.saksbehandler.Resultat;
+import no.nav.saksbehandler.SaksbehandlerSpesialisering;
 import no.nav.årslønn.Årslønn;
 
 /**
@@ -65,21 +67,28 @@ public class DagpengerKalkulator {
    * dagpenger, returneres 0 kr.
    * @throws IllegalArgumentException hvis beregningsmetoden er ugyldig eller uventet.
    */
-  public double kalkulerDagsats() throws IllegalArgumentException {
+  public Resultat kalkulerDagsats() throws IllegalArgumentException {
     double dagsats = 0;
+    SaksbehandlerSpesialisering spesialisering = SaksbehandlerSpesialisering.AVSLAG_FOR_LAV_INNTEKT;
 
     if (harRettigheterTilDagpenger()) {
-      dagsats = switch (velgBeregningsMetode()) {
-        case SISTE_ÅRSLØNN -> beregnDagsats(
-            summerNyligeÅrslønner(1));
-        case GJENNOMSNITTET_AV_TRE_ÅR -> beregnDagsats(
-            summerNyligeÅrslønner(3) / 3);
-        case MAKS_ÅRLIG_DAGPENGERGRUNNLAG -> beregnDagsats(
-            grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag());
+      switch (velgBeregningsMetode()) {
+        case SISTE_ÅRSLØNN:
+          dagsats = beregnDagsats(summerNyligeÅrslønner(1));
+          spesialisering = SaksbehandlerSpesialisering.INNVILGET;
+          break;
+        case GJENNOMSNITTET_AV_TRE_ÅR:
+          dagsats = beregnDagsats(summerNyligeÅrslønner(3) / 3);
+          spesialisering = SaksbehandlerSpesialisering.INNVILGET;
+          break;
+        case MAKS_ÅRLIG_DAGPENGERGRUNNLAG:
+          dagsats = beregnDagsats(grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag());
+          spesialisering = SaksbehandlerSpesialisering.INNVILGET_MED_MAKSSATS;
+          break;
       };
     }
 
-    return dagsats;
+    return new Resultat(dagsats, spesialisering);
   }
 
   /**
@@ -106,12 +115,12 @@ public class DagpengerKalkulator {
    * @return true hvis personen har rett på dagpenger, false ellers.
    */
   public boolean harRettigheterTilDagpenger() {
-    // Sjekker om gjennomsnittlig lønn de siste 3 årene er høyere eller lik 3G
+    // Sjekker case 1 (3år >= 3G)
     if (summerNyligeÅrslønner(3) >= grunnbeløpVerktøy.hentTotaltGrunnbeløpForGittAntallÅr(3)) {
       return true;
     }
 
-    // Sjekker om siste årslønn er høyere eller lik 1.5G
+    // Sjekker case 2 (sist år >= 1.5G)
     if (summerNyligeÅrslønner(1)
         >= grunnbeløpVerktøy.hentMinimumÅrslønnForRettPåDagpenger()) {
       return true;
@@ -119,7 +128,6 @@ public class DagpengerKalkulator {
 
     return false;
   }
-
 
   /**
    * Velger hvilken beregningsmetode som skal brukes for å kalkulere dagsats, basert på personens
@@ -137,9 +145,9 @@ public class DagpengerKalkulator {
     double gjennomsnittTreÅr = summerNyligeÅrslønner(3) / 3;
     double maksDagpengegrunnlag = grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag();
 
+    // Velg beregningsmetode basert på inntektsgrunnlag
     if (sisteÅrslønn > gjennomsnittTreÅr) {
-      // Hvis siste årslønn er større enn gjennomsnittet av de tre siste årene
-      if (sisteÅrslønn > maksDagpengegrunnlag) {
+      if (sisteÅrslønn >= maksDagpengegrunnlag) {
         return Beregningsmetode.MAKS_ÅRLIG_DAGPENGERGRUNNLAG;
       }
       return Beregningsmetode.SISTE_ÅRSLØNN;
