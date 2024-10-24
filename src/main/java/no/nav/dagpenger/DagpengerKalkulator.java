@@ -8,17 +8,26 @@ import no.nav.grunnbeløp.GrunnbeløpVerktøy;
 import no.nav.årslønn.Årslønn;
 
 /**
- * Kalkulator for å beregne hvor mye dagpenger en person har rett på i Norge basert på dagens
- * grunnbeløp (1G). For at en person skal ha rett på dagpenger, må en av de to følgene kravene være
- * møtt: De siste 3 årene må gjennomsnitslønnen være høyere enn 3G. Tjent mer det siste året enn
- * 1.5G. Hvis en person har rett på dagpenger, må følgende ting vurderes for å kalkulere dagsatsen:
- * Hva er størst av gjennomsnittlig årslønn de 3 siste årene og siste årslønn. Hvis siste årslønn er
- * størst, er årslønnen høyere enn 6G. Antall årlige arbeidsdager i Norge er satt til å være 260, så
- * ved beregning av dagsats må 260 dager brukes og ikke 365.
+ * Kalkulator for å beregne dagpenger for personer i Norge basert på dagens grunnbeløp (1G).
+ * <p>
+ * For at en person skal ha rett på dagpenger, må ett av følgende krav være oppfylt:
+ * <ol>
+ *     <li>Gjennomsnittsinntekten de siste tre årene må være høyere enn 3G.</li>
+ *     <li>Inntekten det siste året må være høyere enn 1,5G.</li>
+ * </ol>
+ *
+ * Dersom en person har rett på dagpenger, vurderes følgende for å kalkulere dagsatsen:
+ * <ol>
+ *     <li>Sammenligning av gjennomsnittlig årslønn de tre siste årene med årslønnen det siste året.</li>
+ *     <li>Hvis årslønnen det siste året er høyere enn gjennomsnittlig årslønn, vurderes om den er høyere enn 6G.</li>
+ * </ol>
+ *
+ * Dagsatsen beregnes med utgangspunkt i 260 arbeidsdager per år, i stedet for 365 dager.
  *
  * @author Emil Elton Nilsen
  * @version 1.0
  */
+
 public class DagpengerKalkulator {
 
   public final GrunnbeløpVerktøy grunnbeløpVerktøy;

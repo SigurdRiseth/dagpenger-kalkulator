@@ -1,18 +1,34 @@
 package no.nav.årslønn;
 
 /**
- * Representeren en person sin lønn et kalenderår. Holder på informasjon som hvilket år lønnen
- * tilhører, og selve lønnen det kalenderåret.
+ * Representerer en persons lønn for et kalenderår.
  *
- * @author Emil Elton Nilsen
- * @version 1.0
+ * <p>
+ * Holder på informasjon om hvilket år lønnen tilhører og selve lønnen for det kalenderåret.
+ * </p>
+ *
+ * @author Emil Elton Nilsen, Sigurd Riseth
+ * @version 1.1
  */
 public class Årslønn {
 
-  private final int åretForLønn;
-  private final double årslønn;
+  private int åretForLønn;
+  private double årslønn;
 
-  public Årslønn(int åretForLønn, double årslønn) {
+  /**
+   * Konstruktør for å initialisere en ny instans av Årslønn med gitt år og lønn.
+   *
+   * @param åretForLønn året som lønnen tilhører. Må være 2010 eller nyere.
+   * @param årslønn     lønnen for det gitte året. Kan ikke være negativ.
+   * @throws IllegalArgumentException hvis årslønnen er negativ eller året er under 2010.
+   */
+  public Årslønn(int åretForLønn, double årslønn) throws IllegalArgumentException {
+    if (åretForLønn < 2010) {
+      throw new IllegalArgumentException("Årstallet for lønning kan ikke være under 2010.");
+    }
+    if (årslønn < 0) {
+      throw new IllegalArgumentException("Årslønnen kan ikke være negativ.");
+    }
     this.åretForLønn = åretForLønn;
     this.årslønn = årslønn;
   }
