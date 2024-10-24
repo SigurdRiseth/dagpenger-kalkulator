@@ -23,6 +23,7 @@ import no.nav.årslønn.Årslønn;
  * </ol>
  *
  * Dagsatsen beregnes med utgangspunkt i 260 arbeidsdager per år, i stedet for 365 dager.
+ * </p>
  *
  * @author Emil Elton Nilsen
  * @version 1.0
