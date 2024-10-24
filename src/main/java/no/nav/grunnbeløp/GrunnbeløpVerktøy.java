@@ -2,18 +2,32 @@ package no.nav.grunnbeløp;
 
 import java.io.IOException;
 
+
 /**
- * Verktøy med forskjellige hjelpemetoder til å kalkulere forskjellige grunnbeløpsverdier, som
- * bruker i prossesen for å kalkulere hvilken dagsats en person har rett på. Grunnbeløpet brukt i
- * disse metodene hente fra NAV sitt grunnebeløp API.
+ * Verktøy med forskjellige hjelpemetoder for å kalkulere grunnbeløpsverdier.
  *
- * @author Emil Elton Nilsen
- * @version 1.0
+ * <p>
+ * Denne klassen benytter NAVs grunnbeløp API for å hente dagens grunnbeløp, og tilbyr metoder for å
+ * kalkulere beløp relatert til dagpenger basert på grunnbeløpet.
+ *
+ * @author Emil Elton Nilsen, Sigurd Riseth
+ * @version 1.1
+ * @see GrunnbeløpAPI
  */
 public class GrunnbeløpVerktøy {
 
+  private static final double MINIMUM_MULTIPLIKATOR_DAGPENGER = 1.5; // 1.5G
+  private static final double MAKS_MULTIPLIKATOR_DAGPENGER = 6.0; // 6G
   private double grunnbeløp;
 
+  /**
+   * Konstruktør for {@link GrunnbeløpVerktøy}-klassen.
+   *
+   * <p>
+   * Denne konstruktøren initialiserer et nytt {@link GrunnbeløpVerktøy}-objekt ved å hente dagens
+   * grunnbeløp fra NAVs grunnbeløp API. Dersom det oppstår problemer med tilkoblingen til API'et,
+   * vil en feilmelding skrives ut til konsollen.
+   */
   public GrunnbeløpVerktøy() {
     try {
       this.grunnbeløp = new GrunnbeløpAPI().hentGrunnbeløp();
@@ -23,30 +37,30 @@ public class GrunnbeløpVerktøy {
   }
 
   /**
-   * Kalkulerer det totale grunnbeløpet for gitt antall år.
+   * Kalkulerer det totale grunnbeløpet for et gitt antall år.
    *
-   * @param antallÅr antall år med grunnbeløp å kalkulere.
-   * @return grunnbeløpet over gitt antall år.
+   * @param antallÅr antall år med grunnbeløp som skal kalkuleres.
+   * @return det totale grunnbeløpet for det angitte antallet år.
    */
   public double hentTotaltGrunnbeløpForGittAntallÅr(int antallÅr) {
     return this.grunnbeløp * antallÅr;
   }
 
   /**
-   * Kalkulerer hvor mye en person må tjene det siste året for å ha rett på dagpenger.
+   * Kalkulerer minimum årslønn en person må tjene det siste året for å ha rett på dagpenger.
    *
-   * @return 1.5G basert på dagens grunnbeløp.
+   * @return minimum årslønn for rett på dagpenger, beregnet som 1.5G basert på dagens grunnbeløp.
    */
   public double hentMinimumÅrslønnForRettPåDagpenger() {
-    return this.grunnbeløp * 1.5;
+    return this.grunnbeløp * MINIMUM_MULTIPLIKATOR_DAGPENGER;
   }
 
   /**
-   * Kalkulerer hvor høyt maks årlig dagpengegrunnlag kan være.
+   * Kalkulerer det maksimale årlige dagpengegrunnlaget en person kan ha.
    *
-   * @return 6G basert på dagens grunnbeløp.
+   * @return det maksimale årlige dagpengegrunnlaget, beregnet som 6G basert på dagens grunnbeløp.
    */
   public double hentMaksÅrligDagpengegrunnlag() {
-    return this.grunnbeløp * 6;
+    return this.grunnbeløp * MAKS_MULTIPLIKATOR_DAGPENGER;
   }
 }
