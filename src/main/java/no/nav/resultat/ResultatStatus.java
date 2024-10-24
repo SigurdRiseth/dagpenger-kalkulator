@@ -1,4 +1,4 @@
-package no.nav.saksbehandler;
+package no.nav.resultat;
 
 /**
  * Representerer statusen til et resultat.
@@ -12,9 +12,9 @@ package no.nav.saksbehandler;
  * </ul>
  * </p>
  *
- * @see no.nav.saksbehandler.Resultat
  * @author Sigurd Riseth
  * @version 1.0
+ * @see Resultat
  */
 public enum ResultatStatus {
   UBEHANDLET,

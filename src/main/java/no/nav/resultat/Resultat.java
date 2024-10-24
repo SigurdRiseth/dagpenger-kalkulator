@@ -1,4 +1,6 @@
-package no.nav.saksbehandler;
+package no.nav.resultat;
+
+import no.nav.saksbehandler.SaksbehandlerSpesialisering;
 
 /**
  * Representerer et resultat av en dagpengeforespørsel.
@@ -8,23 +10,24 @@ package no.nav.saksbehandler;
  * har behandlet forespørselen.
  * </p>
  *
- * @see no.nav.saksbehandler.Saksbehandler
- * @see no.nav.saksbehandler.SaksbehandlerSpesialisering
- * @see no.nav.saksbehandler.ResultatStatus
  * @author Sigurd Riseth
  * @version 1.0
+ * @see no.nav.saksbehandler.Saksbehandler
+ * @see no.nav.saksbehandler.SaksbehandlerSpesialisering
+ * @see ResultatStatus
  */
 public class Resultat {
+
   private final SaksbehandlerSpesialisering spesialisering;
-  private ResultatStatus status;
   private final double dagsats;
+  private ResultatStatus status;
 
   /**
    * Oppretter et nytt resultat.
    *
    * <p> Resultatet er initialisert som ubehandlet. </p>
    *
-   * @param dagsats dagsatsen som er beregnet.
+   * @param dagsats        dagsatsen som er beregnet.
    * @param spesialisering spesialiseringen som har behandlet forespørselen.
    */
   public Resultat(double dagsats, SaksbehandlerSpesialisering spesialisering) {
@@ -39,6 +42,10 @@ public class Resultat {
 
   public void setStatus(ResultatStatus status) {
     this.status = status;
+  }
+
+  public ResultatStatus hentStatus() {
+    return status;
   }
 
   public double hentDagsats() {

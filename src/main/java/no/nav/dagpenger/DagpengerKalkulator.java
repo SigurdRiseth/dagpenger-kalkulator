@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import no.nav.grunnbeløp.GrunnbeløpVerktøy;
-import no.nav.saksbehandler.Resultat;
+import no.nav.resultat.Resultat;
 import no.nav.saksbehandler.SaksbehandlerSpesialisering;
 import no.nav.årslønn.Årslønn;
 
@@ -69,26 +69,26 @@ public class DagpengerKalkulator {
    */
   public Resultat kalkulerDagsats() throws IllegalArgumentException {
     double dagsats = 0;
-    SaksbehandlerSpesialisering spesialisering = SaksbehandlerSpesialisering.AVSLAG_FOR_LAV_INNTEKT;
+    SaksbehandlerSpesialisering kalkulertResultat = SaksbehandlerSpesialisering.AVSLAG_FOR_LAV_INNTEKT;
 
     if (harRettigheterTilDagpenger()) {
       switch (velgBeregningsMetode()) {
         case SISTE_ÅRSLØNN:
           dagsats = beregnDagsats(summerNyligeÅrslønner(1));
-          spesialisering = SaksbehandlerSpesialisering.INNVILGET;
+          kalkulertResultat = SaksbehandlerSpesialisering.INNVILGET;
           break;
         case GJENNOMSNITTET_AV_TRE_ÅR:
           dagsats = beregnDagsats(summerNyligeÅrslønner(3) / 3);
-          spesialisering = SaksbehandlerSpesialisering.INNVILGET;
+          kalkulertResultat = SaksbehandlerSpesialisering.INNVILGET;
           break;
         case MAKS_ÅRLIG_DAGPENGERGRUNNLAG:
           dagsats = beregnDagsats(grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag());
-          spesialisering = SaksbehandlerSpesialisering.INNVILGET_MED_MAKSSATS;
+          kalkulertResultat = SaksbehandlerSpesialisering.INNVILGET_MED_MAKSSATS;
           break;
       }
     }
 
-    return new Resultat(dagsats, spesialisering);
+    return new Resultat(dagsats, kalkulertResultat);
   }
 
   /**

@@ -12,9 +12,9 @@ package no.nav.saksbehandler;
  * </ul>
  * </p>
  *
- * @see no.nav.saksbehandler.Saksbehandler
  * @author Sigurd Riseth
  * @version 1.0
+ * @see no.nav.saksbehandler.Saksbehandler
  */
 public enum SaksbehandlerSpesialisering {
   AVSLAG_FOR_LAV_INNTEKT,

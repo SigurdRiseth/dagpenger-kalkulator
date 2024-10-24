@@ -12,9 +12,9 @@ package no.nav.dagpenger;
  * </ul>
  * </p>
  *
- * @see no.nav.dagpenger.DagpengerKalkulator
  * @author Sigurd Riseth
  * @version 1.0
+ * @see no.nav.dagpenger.DagpengerKalkulator
  */
 public enum Beregningsmetode {
   SISTE_ÅRSLØNN,
