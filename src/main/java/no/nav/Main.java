@@ -19,12 +19,12 @@ public class Main {
 
       Resultat resultat = dagpengerKalkulator.kalkulerDagsats();
 
-      saksbehandler.behandleResultat(resultat);
+      saksbehandler.behandleResultat(resultat); // TODO: En saksbehandler skal kunne hente ubehandlede resultater innenfor sin spesialisering.
 
       System.out.println("====================================");
       System.out.println("NAV Dagpengerkalkulator");
-      System.out.println("Saksbehandler: " + saksbehandler.hentNavn());
-      System.out.println("Resultat av dagpengeforespørsel: " + resultat.hentSpesialisering() + " - " + resultat.hentDagsats() + " kr per dag.");
+      System.out.println("Saksbehandler: " + saksbehandler.hentNavn() + " - " + saksbehandler.hentSpesialisering());
+      System.out.println("Resultat av dagpengeforespørsel: " + resultat.hentSpesialisering() + " - " + resultat.hentDagsats() + " kr per dag.");  // TODO: Gjør SaksbehandlerSpesialisering til et mer generellt navn, feks.
       System.out.println("====================================");
     }
     catch (Exception e) {
