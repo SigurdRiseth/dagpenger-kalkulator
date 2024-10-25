@@ -31,8 +31,11 @@ public class Main {
   private static void skrivUtEnkeltResultat(Saksbehandler saksbehandler, Resultat resultat) {
     System.out.println("====================================");
     System.out.println("NAV Dagpengerkalkulator");
-    System.out.println("Saksbehandler: " + saksbehandler.hentNavn() + " - " + saksbehandler.hentSpesialisering());
-    System.out.println("Resultat av dagpengeforespørsel: " + resultat.hentStatus() + " - " + resultat.hentDagsats() + " kr per dag.");
+    System.out.println(
+        "Saksbehandler: " + saksbehandler.hentNavn() + " - " + saksbehandler.hentSpesialisering());
+    System.out.println(
+        "Resultat av dagpengeforespørsel: " + resultat.hentStatus() + " - " + resultat.hentDagsats()
+            + " kr per dag.");
     System.out.println("====================================");
   }
 }

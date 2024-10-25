@@ -14,8 +14,8 @@ class ÅrslønnTest {
   void testGyldigÅrslønnOgÅr() {
     Årslønn årslønn = new Årslønn(2022, 500000.0);
 
-    assertEquals(2022, årslønn.hentÅretForLønn());
-    assertEquals(500000.0, årslønn.hentÅrslønn());
+    assertEquals(2022, årslønn.hentÅretForLønn(), "Årslønnens år er feil.");
+    assertEquals(500000.0, årslønn.hentÅrslønn(), "Årslønnens beløp er feil.");
   }
 
   /**
@@ -27,7 +27,8 @@ class ÅrslønnTest {
       new Årslønn(2009, 500000.0);
     });
 
-    assertEquals("Årstallet for lønning kan ikke være under 2010.", exception.getMessage());
+    assertEquals("Årstallet for lønning kan ikke være under 2010.", exception.getMessage(),
+        "Feilmelding er feil.");
   }
 
   /**
@@ -39,7 +40,8 @@ class ÅrslønnTest {
       new Årslønn(2022, -50000.0);
     });
 
-    assertEquals("Årslønnen kan ikke være negativ.", exception.getMessage());
+    assertEquals("Årslønnen kan ikke være negativ.", exception.getMessage(),
+        "Feilmelding er feil.");
   }
 
   /**
@@ -49,8 +51,8 @@ class ÅrslønnTest {
   void testNullÅrslønn() {
     Årslønn årslønn = new Årslønn(2022, 0.0);
 
-    assertEquals(2022, årslønn.hentÅretForLønn());
-    assertEquals(0.0, årslønn.hentÅrslønn());
+    assertEquals(2022, årslønn.hentÅretForLønn(), "Årslønnens år er feil.");
+    assertEquals(0.0, årslønn.hentÅrslønn(), "Årslønnens beløp er feil.");
   }
 
 }

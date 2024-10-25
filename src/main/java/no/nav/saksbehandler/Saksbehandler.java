@@ -47,9 +47,9 @@ public class Saksbehandler {
    * saksbehandleren og resultatets spesialisering.
    *
    * <p>
-   * Saksbehandleren kan kun behandle resultater som samsvarer med sin egen spesialisering.
-   * Hvis resultatets spesialisering ikke samsvarer med saksbehandlerens spesialisering,
-   * vil det ikke behandles.
+   * Saksbehandleren kan kun behandle resultater som samsvarer med sin egen spesialisering. Hvis
+   * resultatets spesialisering ikke samsvarer med saksbehandlerens spesialisering, vil det ikke
+   * behandles.
    * </p>
    *
    * <p>
