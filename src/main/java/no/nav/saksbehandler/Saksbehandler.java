@@ -1,5 +1,6 @@
 package no.nav.saksbehandler;
 
+import java.util.Iterator;
 import no.nav.resultat.Resultat;
 import no.nav.resultat.ResultatStatus;
 
@@ -48,7 +49,7 @@ public class Saksbehandler {
    * <p>
    * Saksbehandleren kan kun behandle resultater som samsvarer med sin egen spesialisering.
    * Hvis resultatets spesialisering ikke samsvarer med saksbehandlerens spesialisering,
-   * vil det kastes et unntak.
+   * vil det ikke behandles.
    * </p>
    *
    * <p>
@@ -60,17 +61,37 @@ public class Saksbehandler {
    * @param resultat resultatet som skal behandles.
    * @throws IllegalArgumentException hvis resultatet har feil spesialisering for saksbehandleren.
    */
-  public void behandleResultat(Resultat resultat) throws IllegalArgumentException {
+  public void behandleResultat(Resultat resultat) {
     if (resultat.hentSpesialisering() != spesialisering) {
-      throw new IllegalArgumentException(
-          String.format("Resultatets spesialisering '%s' samsvarer ikke med saksbehandlerens spesialisering '%s'.",
-              resultat.hentSpesialisering(), spesialisering));
+      return;
     }
 
-    if (spesialisering == SaksbehandlerSpesialisering.AVSLAG_FOR_LAV_INNTEKT) {
-      resultat.setStatus(ResultatStatus.AVSLÅTT);
-    } else {
-      resultat.setStatus(ResultatStatus.INNVILGET);
+    switch (spesialisering) {
+      case AVSLAG_FOR_LAV_INNTEKT:
+        resultat.setStatus(ResultatStatus.AVSLÅTT);
+        break;
+      default:
+        resultat.setStatus(ResultatStatus.INNVILGET);
+        break;
+    }
+  }
+
+  /**
+   * Behandler ubehandlede resultater som samsvarer med saksbehandlerens spesialisering.
+   *
+   * <p>
+   * Itererer over en liste med ubehandlede resultater og behandler de som samsvarer med
+   * saksbehandlerens spesialisering.
+   * </p>
+   *
+   * @param iterator iterator over ubehandlede resultater.
+   */
+  public void behandleUbehandledeResultater(Iterator<Resultat> iterator) {
+    while (iterator.hasNext()) {
+      Resultat resultat = iterator.next();
+      if (resultat.hentSpesialisering() == spesialisering) {
+        behandleResultat(resultat);
+      }
     }
   }
 
